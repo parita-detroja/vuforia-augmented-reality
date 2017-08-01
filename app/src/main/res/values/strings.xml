@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">Augmented Reality</string>
+
+    <string name="INIT_ERROR_DEVICE_NOT_SUPPORTED">Failed to initialize Vuforia. This device is not supported.</string>
+    <string name="INIT_ERROR_NO_CAMERA_ACCESS">Failed to initialize Vuforia. Camera not accessible</string>
+    <string name="INIT_LICENSE_ERROR_MISMATCH_KEY">Vuforia App key is not valid for this product. Please get a valid key, by logging into your account at developer.vuforia.com and choosing the right product type during project creation.</string>
+    <string name="INIT_LICENSE_ERROR_MISSING_KEY">Vuforia App key is missing. Please get a valid key, by logging into your account at developer.vuforia.com and creating a new project.</string>
+    <string name="INIT_LICENSE_ERROR_INVALID_KEY">Invalid Key used. Please make sure you are using a valid Vuforia App Key.</string>
+    <string name="INIT_LICENSE_ERROR_NO_NETWORK_TRANSIENT">Unable to contact server. Please try again later.</string>
+    <string name="INIT_LICENSE_ERROR_NO_NETWORK_PERMANENT">No network available. Please make sure you are connected to the Internet.</string>
+    <string name="INIT_LICENSE_ERROR_CANCELED_KEY">This app license key has been canceled and may no longer be used. Please get a new license key.</string>
+    <string name="INIT_LICENSE_ERROR_PRODUCT_TYPE_MISMATCH">Vuforia App key is not valid for this product. Please get a valid key, by logging into your account at developer.vuforia.com and choosing the right product type during project creation.</string>
+    <string name="INIT_LICENSE_ERROR_UNKNOWN_ERROR">Failed to initialize Vuforia.</string>
+    <string name="INIT_ERROR">Error</string>
+    <string name="button_OK">OK</string>
+
+    <string name="txt_location_based_ar">Location based AR</string>
+    <string name="txt_text_recognition">Text Recognition</string>
+    <string name="txt_image_target">Image Target</string>
+    <string name="txt_moving_target">Moving Target</string>
+    <string name="txt_user_defined_target">User Defined Target</string>
+
+    <string name="target_quality_error_title">Low Quality Image</string>
+    <string name="target_quality_error_desc">The image has very little detail, please try another.</string>
+    <string name="content_desc_camera_button">Camera Button</string>
+    <string name="content_desc_screen_shot_button">Screen Shot Button</string>
+
+    <string name="text_gps_loading">GPS is loading&#8230;</string>
+    <string name="text_location_image">Location Image</string>
+    <string name="API_KEY">AIzaSyBYii7cr0rxsb-yNGsmcex1mTO6HIMK2Ec</string>
+
+    <string name="txt_error_permission_needed">Permission not granted.</string>
+
+</resources>

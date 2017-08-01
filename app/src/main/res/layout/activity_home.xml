@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.root.augmentedreality.activity.HomeActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:id="@+id/ll_images_row1">
+
+            <RelativeLayout
+                android:id="@+id/relative_layout_location_based_ar"
+                style="@style/CustomStyleRelativeLayoutHomeFragment">
+
+                <ImageView
+                    android:id="@+id/image_location_based_ar"
+                    style="@style/CustomStyleImageViewHomeFragmentNew"
+                    android:src="@drawable/location_based_ar" />
+
+                <TextView
+                    style="@style/CustomStyleTextViewHomeFragmentNew"
+                    android:layout_below="@id/image_location_based_ar"
+                    android:text="@string/txt_location_based_ar"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relative_layout_text_recognition"
+                style="@style/CustomStyleRelativeLayoutHomeFragment">
+
+                <ImageView
+                    android:id="@+id/image_text_recognition"
+                    style="@style/CustomStyleImageViewHomeFragmentNew"
+                    android:src="@drawable/text_recognition" />
+
+                <TextView
+                    style="@style/CustomStyleTextViewHomeFragmentNew"
+                    android:layout_below="@id/image_text_recognition"
+                    android:text="@string/txt_text_recognition"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:id="@+id/ll_images_row2"
+            android:layout_below="@+id/ll_images_row1">
+
+            <RelativeLayout
+                android:id="@+id/relative_layout_image_target"
+                style="@style/CustomStyleRelativeLayoutHomeFragment">
+
+                <ImageView
+                    android:id="@+id/image_image_target"
+                    style="@style/CustomStyleImageViewHomeFragmentNew"
+                    android:src="@drawable/image_target" />
+
+                <TextView
+                    style="@style/CustomStyleTextViewHomeFragmentNew"
+                    android:layout_below="@id/image_image_target"
+                    android:text="@string/txt_image_target"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relative_layout_moving_target"
+                style="@style/CustomStyleRelativeLayoutHomeFragment">
+
+                <ImageView
+                    android:id="@+id/image_moving_target"
+                    style="@style/CustomStyleImageViewHomeFragmentNew"
+                    android:src="@drawable/moving_target" />
+
+                <TextView
+                    style="@style/CustomStyleTextViewHomeFragmentNew"
+                    android:layout_below="@id/image_moving_target"
+                    android:text="@string/txt_moving_target"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:id="@+id/ll_images_row3"
+            android:layout_below="@+id/ll_images_row2">
+
+            <RelativeLayout
+                android:id="@+id/relative_layout_user_defined_target"
+                style="@style/CustomStyleRelativeLayoutHomeFragment">
+
+                <ImageView
+                    android:id="@+id/image_user_defined_target"
+                    style="@style/CustomStyleImageViewHomeFragmentNew"
+                    android:src="@drawable/user_defined_object" />
+
+                <TextView
+                    style="@style/CustomStyleTextViewHomeFragmentNew"
+                    android:layout_below="@id/image_user_defined_target"
+                    android:text="@string/txt_user_defined_target"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</ScrollView>

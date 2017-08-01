@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/text_place_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="50sp"
+            android:textColor="@android:color/holo_blue_dark"
+            android:layout_centerHorizontal="true"/>
+
+        <ImageView
+            android:id="@+id/image_place_photo"
+            android:layout_width="450dp"
+            android:layout_height="250dp"
+            android:layout_below="@+id/text_place_name"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/text_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="3"
+            android:textSize="20sp"
+            android:layout_below="@+id/image_place_photo"/>
+
+        <TextView
+            android:id="@+id/text_rating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_below="@+id/text_address"/>
+
+        <TextView
+            android:id="@+id/text_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_below="@+id/text_rating"/>
+
+        <TextView
+            android:id="@+id/text_uri"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_below="@+id/text_number"/>
+
+        <TextView
+            android:id="@+id/text_attribution"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_below="@+id/text_uri"/>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
