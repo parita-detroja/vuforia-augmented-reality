@@ -95,7 +95,7 @@ class ImageTargetActivity : AppCompatActivity(), ApplicationControl
 
         val mTrackerManger: TrackerManager = TrackerManager.getInstance()
 
-        val mObjectTracker: ObjectTracker = mTrackerManger.getTracker(ObjectTracker.getClassType()) as ObjectTracker
+        val mObjectTracker: ObjectTracker? = mTrackerManger.getTracker(ObjectTracker.getClassType()) as ObjectTracker
 
         if(mObjectTracker == null)
         {
@@ -114,7 +114,7 @@ class ImageTargetActivity : AppCompatActivity(), ApplicationControl
             return false
         }
 
-        if(!mCurrentDataset!!.load(mDataSetString.get(mCurrentDataSelectionIndex), STORAGE_TYPE.STORAGE_APPRESOURCE))
+        if(!mCurrentDataset!!.load(mDataSetString[mCurrentDataSelectionIndex], STORAGE_TYPE.STORAGE_APPRESOURCE))
         {
             Log.d("ImageTargetActivity","Failed to load data.")
             return false
