@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import com.example.root.augmentedreality.R
+import com.example.root.augmentedreality.utility.Constant
 import kotlinx.android.synthetic.main.activity_home.*
 
 
@@ -40,6 +41,12 @@ class HomeActivity : AppCompatActivity() {
         }
 
         relative_layout_user_defined_target.setOnClickListener {
+            Constant.activityFlag = Constant.USERDEFINEDTARGETACTIVITY
+            requestCameraPermission()
+        }
+
+        relative_layout_load_image.setOnClickListener {
+            Constant.activityFlag = Constant.IMAGEACTIVITY
             requestCameraPermission()
         }
     }
@@ -53,8 +60,15 @@ class HomeActivity : AppCompatActivity() {
         }
         else
         {
-            val intent: Intent = Intent(this, UserDefinedTargetsActivity::class.java)
-            startActivity(intent)
+            var intent: Intent? = null
+            if (Constant.activityFlag == Constant.IMAGEACTIVITY)
+            {
+                intent = Intent(this, ImageActivity::class.java)
+            }
+            else if(Constant.activityFlag == Constant.USERDEFINEDTARGETACTIVITY) {
+                intent = Intent(this, UserDefinedTargetsActivity::class.java)
+            }
+            startActivity(intent!!)
         }
     }
 

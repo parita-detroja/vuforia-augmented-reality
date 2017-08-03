@@ -1,6 +1,8 @@
 package com.example.root.augmentedreality.utility
 
+import android.app.Activity
 import android.util.Log
+import com.example.root.augmentedreality.activity.ImageActivity
 import com.example.root.augmentedreality.activity.UserDefinedTargetsActivity
 import com.example.root.augmentedreality.vuforia.ApplicationSession
 import com.vuforia.*
@@ -9,7 +11,7 @@ import com.vuforia.*
 /**
  * Created by root on 28/6/17.
  */
-class RefFreeFrame(activity: UserDefinedTargetsActivity, session: ApplicationSession)
+class RefFreeFrame(activity: Activity, session: ApplicationSession)
 {
     val TAG: String = "RefFreeFrame"
 
@@ -33,7 +35,7 @@ class RefFreeFrame(activity: UserDefinedTargetsActivity, session: ApplicationSes
     // The latest trackable source to be extracted from the Target Builder
     var trackableSource: TrackableSource?
 
-    var mActivity: UserDefinedTargetsActivity
+    lateinit var mActivity: Activity
 
     var vuforiaAppSession: ApplicationSession
 
@@ -51,7 +53,14 @@ class RefFreeFrame(activity: UserDefinedTargetsActivity, session: ApplicationSes
 
 
     init{
-        mActivity = activity
+        if(Constant.activityFlag == Constant.IMAGEACTIVITY)
+        {
+            mActivity = activity as ImageActivity
+        }
+        else if(Constant.activityFlag == Constant.USERDEFINEDTARGETACTIVITY)
+        {
+            mActivity = activity as UserDefinedTargetsActivity
+        }
         vuforiaAppSession = session
         colorFrame = FloatArray(4)
         curStatus = STATUS.STATUS_IDLE
@@ -164,7 +173,14 @@ class RefFreeFrame(activity: UserDefinedTargetsActivity, session: ApplicationSes
                     lastSuccessTime = lastFrameTime
                     trackableSource = newTrackableSource
 
-                    mActivity.targetCreated()
+                    if(Constant.activityFlag == Constant.IMAGEACTIVITY)
+                    {
+                        (mActivity as ImageActivity).targetCreated()
+                    }
+                    else if(Constant.activityFlag == Constant.USERDEFINEDTARGETACTIVITY)
+                    {
+                        (mActivity as UserDefinedTargetsActivity).targetCreated()
+                    }
                 }
             }
             else -> {
@@ -192,7 +208,14 @@ class RefFreeFrame(activity: UserDefinedTargetsActivity, session: ApplicationSes
             curStatus = STATUS.STATUS_IDLE
 
             Log.d(TAG, "Built target, reactivating dataset with new target")
-            mActivity.doStartTracker()
+            if(Constant.activityFlag == Constant.IMAGEACTIVITY)
+            {
+                (mActivity as ImageActivity).doStartTracker()
+            }
+            else if(Constant.activityFlag == Constant.USERDEFINEDTARGETACTIVITY)
+            {
+                (mActivity as UserDefinedTargetsActivity).doStartTracker()
+            }
         }
 
         // Renders the hints

@@ -113,6 +113,22 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
+                android:id="@+id/relative_layout_load_image"
+                style="@style/CustomStyleRelativeLayoutHomeFragment">
+
+                <ImageView
+                    android:id="@+id/image_load_image"
+                    style="@style/CustomStyleImageViewHomeFragmentNew"
+                    android:src="@drawable/user_defined_object" />
+
+                <TextView
+                    style="@style/CustomStyleTextViewHomeFragmentNew"
+                    android:layout_below="@id/image_load_image"
+                    android:text="@string/txt_user_defined_target"/>
+
+            </RelativeLayout>
+
         </LinearLayout>
 
     </RelativeLayout>

@@ -1,9 +1,11 @@
 package com.example.root.augmentedreality.utility
 
+import android.app.Activity
 import android.content.res.Configuration
 import android.opengl.GLES20
 import android.opengl.Matrix
 import android.util.Log
+import com.example.root.augmentedreality.activity.ImageActivity
 import com.example.root.augmentedreality.activity.UserDefinedTargetsActivity
 import com.example.root.augmentedreality.vuforia.ApplicationSession
 import com.vuforia.Matrix44F
@@ -15,11 +17,11 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
 
-class RefFreeFrameGL(activity: UserDefinedTargetsActivity, session: ApplicationSession)
+class RefFreeFrameGL(activity: Activity, session: ApplicationSession)
 {
     private val TAG: String = "RefFreeFrameGL"
 
-    private var mActivity: UserDefinedTargetsActivity
+    private lateinit var mActivity: Activity
 
     private var mVuforiaAppSession: ApplicationSession
 
@@ -73,7 +75,16 @@ class RefFreeFrameGL(activity: UserDefinedTargetsActivity, session: ApplicationS
 
     init
     {
-        mActivity = activity
+
+        if(Constant.activityFlag == Constant.IMAGEACTIVITY)
+        {
+            mActivity = activity as ImageActivity
+        }
+        else if(Constant.activityFlag == Constant.USERDEFINEDTARGETACTIVITY)
+        {
+            mActivity = activity as UserDefinedTargetsActivity
+        }
+
         mVuforiaAppSession = session
 
         Log.d(TAG,"RefFreeFrameGL Constructor")
@@ -249,7 +260,16 @@ class RefFreeFrameGL(activity: UserDefinedTargetsActivity, session: ApplicationS
 
     fun getTextures() {
         for (i in 0..TEXTURE_NAME().TEXTURE_COUNT - 1)
-            textures[i] = mActivity.createTexture(textureNames[i])
+        {
+            if(Constant.activityFlag == Constant.IMAGEACTIVITY)
+            {
+                textures[i] = (mActivity as ImageActivity).createTexture(textureNames[i])
+            }
+            else if(Constant.activityFlag == Constant.USERDEFINEDTARGETACTIVITY)
+            {
+                textures[i] = (mActivity as UserDefinedTargetsActivity).createTexture(textureNames[i])
+            }
+        }
     }
 
 
