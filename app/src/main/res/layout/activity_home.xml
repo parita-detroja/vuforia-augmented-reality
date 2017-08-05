@@ -114,18 +114,18 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/relative_layout_load_image"
+                android:id="@+id/relative_layout_cloud_recognition"
                 style="@style/CustomStyleRelativeLayoutHomeFragment">
 
                 <ImageView
-                    android:id="@+id/image_load_image"
+                    android:id="@+id/image_cloud_recognition"
                     style="@style/CustomStyleImageViewHomeFragmentNew"
-                    android:src="@drawable/user_defined_object" />
+                    android:src="@drawable/cloud_recognition" />
 
                 <TextView
                     style="@style/CustomStyleTextViewHomeFragmentNew"
-                    android:layout_below="@id/image_load_image"
-                    android:text="@string/txt_user_defined_target"/>
+                    android:layout_below="@id/image_cloud_recognition"
+                    android:text="@string/txt_cloud_recognition"/>
 
             </RelativeLayout>
 

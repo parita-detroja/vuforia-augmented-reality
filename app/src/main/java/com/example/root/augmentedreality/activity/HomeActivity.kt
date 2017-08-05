@@ -45,9 +45,11 @@ class HomeActivity : AppCompatActivity() {
             requestCameraPermission()
         }
 
-        relative_layout_load_image.setOnClickListener {
-            Constant.activityFlag = Constant.IMAGEACTIVITY
-            requestCameraPermission()
+        relative_layout_cloud_recognition.setOnClickListener {
+            /*Constant.activityFlag = Constant.IMAGEACTIVITY
+            requestCameraPermission()*/
+            val intent: Intent = Intent(this, CloudRecognitionActivity::class.java)
+            startActivity(intent)
         }
     }
 

@@ -48,6 +48,7 @@
         <activity android:name=".activity.MovingTargetActivity" />
         <activity android:name=".activity.UserDefinedTargetsActivity" />
         <activity android:name=".activity.ImageActivity" />
+        <activity android:name=".activity.CloudRecognitionActivity" />
     </application>
 
 </manifest>
