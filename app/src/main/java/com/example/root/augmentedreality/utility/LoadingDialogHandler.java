@@ -26,13 +26,11 @@ public final class LoadingDialogHandler extends Handler
     
     public View mLoadingDialogContainer;
     
-    
     public LoadingDialogHandler(Activity activity)
     {
         mActivity = new WeakReference<Activity>(activity);
     }
-    
-    
+
     public void handleMessage(Message msg)
     {
         Activity imageTargets = mActivity.get();

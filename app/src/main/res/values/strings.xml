@@ -52,4 +52,6 @@
     <string name="UPDATE_ERROR_BAD_FRAME_QUALITY_TITLE">Poor Camera Image</string>
     <string name="UPDATE_ERROR_UNKNOWN_TITLE">Service Unavailable</string>
 
+    <string name="status_bar_scanning">Scanning</string>
+
 </resources>
