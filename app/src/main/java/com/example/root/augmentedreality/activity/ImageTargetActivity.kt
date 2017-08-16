@@ -53,6 +53,10 @@ class ImageTargetActivity : AppCompatActivity(), ApplicationControl
 
     private var mSwitchDatasetAsap: Boolean = false
 
+    private val TOUCH_SCALE_FACTOR = 180.0f / 320
+    private var mPreviousX: Float = 0.toFloat()
+    private var mPreviousY: Float = 0.toFloat()
+
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
@@ -125,7 +129,7 @@ class ImageTargetActivity : AppCompatActivity(), ApplicationControl
             Log.d("ImageTargetActivity","Failed to activate data set.")
         }
 
-        val numTrackables: Int = mCurrentDataset!!.getNumTrackables()
+        val numTrackables: Int = mCurrentDataset!!.numTrackables
 
         for(count in 0..numTrackables-1)
         {
@@ -136,11 +140,11 @@ class ImageTargetActivity : AppCompatActivity(), ApplicationControl
                 mTrackable.startExtendedTracking()
             }
 
-            val name: String = "Current Dataset : " + mTrackable.getName()
+            val name: String = "Current Dataset : " + mTrackable.name
 
-            mTrackable.setUserData(name)
+            mTrackable.userData = name
 
-            Log.d("ImageTargetActivity","UserData:Set the following user data "+mTrackable.getUserData())
+            Log.d("ImageTargetActivity","UserData:Set the following user data "+mTrackable.userData)
 
 
         }
@@ -153,22 +157,17 @@ class ImageTargetActivity : AppCompatActivity(), ApplicationControl
     override fun doStartTracker(): Boolean {
         val result = true
 
-        val objectTracker: Tracker = TrackerManager.getInstance().getTracker(ObjectTracker.getClassType())
-        if(objectTracker != null)
-        {
-            objectTracker.start()
-        }
+        val objectTracker: Tracker? = TrackerManager.getInstance().getTracker(ObjectTracker.getClassType())
+        objectTracker?.start()
+
         return result
     }
 
     override fun doStopTracker(): Boolean {
 
         val result: Boolean = true
-        val mObjectTracker: Tracker = TrackerManager.getInstance().getTracker(ObjectTracker.getClassType())
-        if(mObjectTracker != null)
-        {
-            mObjectTracker.stop()
-        }
+        val mObjectTracker: Tracker? = TrackerManager.getInstance().getTracker(ObjectTracker.getClassType())
+        mObjectTracker?.stop()
 
         return result
 
@@ -176,17 +175,13 @@ class ImageTargetActivity : AppCompatActivity(), ApplicationControl
 
     override fun doUnloadTrackersData(): Boolean {
 
-        var result: Boolean = true
+        val result: Boolean = true
 
         val mTrackerManager: TrackerManager = TrackerManager.getInstance()
-        val mObjectTracker: ObjectTracker = mTrackerManager.getTracker(ObjectTracker.getClassType()) as ObjectTracker
-        if(mObjectTracker == null)
-        {
-            return false
-        }
+        val mObjectTracker: ObjectTracker = mTrackerManager.getTracker(ObjectTracker.getClassType()) as ObjectTracker? ?: return false
         if(mCurrentDataset != null && mCurrentDataset!!.isActive)
         {
-            if(mObjectTracker.getActiveDataSet(0).equals(mCurrentDataset) && !mObjectTracker.deactivateDataSet(mCurrentDataset))
+            if(mObjectTracker.getActiveDataSet(0) == mCurrentDataset && !mObjectTracker.deactivateDataSet(mCurrentDataset))
             {
                 return false
             }else if(!mObjectTracker.destroyDataSet(mCurrentDataset)){
@@ -201,7 +196,14 @@ class ImageTargetActivity : AppCompatActivity(), ApplicationControl
     }
 
     override fun doDeInitTrackerData(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        // Indicate if the trackers were deinitialized correctly
+        val result = true
+
+        val tManager = TrackerManager.getInstance()
+        tManager.deinitTracker(ObjectTracker.getClassType())
+
+        return result
     }
 
     override fun onInitARDone(mApplicationException: ApplicationException?)
@@ -235,6 +237,53 @@ class ImageTargetActivity : AppCompatActivity(), ApplicationControl
             {
                 Log.e("ImageTargetActivity","Unable to enable auto focus")
             }
+
+            val mOnTouchListener = View.OnTouchListener { view, motionEvent ->
+
+                // MotionEvent reports input details from the touch screen
+                // and other input controls. In this case, you are only
+                // interested in events where the touch position changed.
+
+                Log.e("Image Target","on touch called")
+
+                val x = motionEvent.x
+                val y = motionEvent.y
+
+                when (motionEvent.action) {
+                    MotionEvent.ACTION_MOVE -> {
+
+                        Log.e("Image Target","on motion event")
+
+                        var dx = x - mPreviousX
+                        var dy = y - mPreviousY
+
+                        // reverse direction of rotation above the mid-line
+                        if (y > view.height / 2) {
+                            dx *= +1
+                        }
+
+                        // reverse direction of rotation to left of the mid-line
+                        if (x < view.width / 2) {
+                            dy *= +1
+                        }
+
+                        mRenderer.setAngle(
+                                mRenderer.getAngle() + (dx + dy) * TOUCH_SCALE_FACTOR)
+
+                        Log.e("Image Target","Angle Changed")
+
+                        mGLView.requestRender()
+                    }
+                }
+
+                mPreviousX = x
+                mPreviousY = y
+
+                true
+            }
+
+            mGLView.setOnTouchListener(mOnTouchListener)
+
         }else
         {
             Log.e("ImageTargetActivity",mApplicationException.message)
@@ -249,7 +298,7 @@ class ImageTargetActivity : AppCompatActivity(), ApplicationControl
         {
             mSwitchDatasetAsap = false
             val mTrackerManager: TrackerManager = TrackerManager.getInstance()
-            val mObjectTracker: ObjectTracker = mTrackerManager.getTracker(ObjectTracker.getClassType()) as ObjectTracker
+            val mObjectTracker: ObjectTracker? = mTrackerManager.getTracker(ObjectTracker.getClassType()) as ObjectTracker?
             if(mObjectTracker == null || mCurrentDataset == null || mObjectTracker.getActiveDataSet(0) == null)
             {
                 Log.d("ImageTargetActivity","Failed to swap dataset.")
@@ -314,7 +363,7 @@ class ImageTargetActivity : AppCompatActivity(), ApplicationControl
         mUILayout = View.inflate(this, R.layout.camera_overlay,
                 null) as RelativeLayout
 
-        mUILayout.setVisibility(View.VISIBLE)
+        mUILayout.visibility = View.VISIBLE
         mUILayout.setBackgroundColor(Color.BLACK)
 
         // Gets a reference to the loading dialog
@@ -348,7 +397,7 @@ class ImageTargetActivity : AppCompatActivity(), ApplicationControl
                     .setCancelable(false)
                     .setIcon(0)
                     .setPositiveButton(getString(R.string.button_OK)
-                    ) { dialog, id -> finish() }
+                    ) { _, _ -> finish() }
 
             mErrorDialog = builder.create()
             mErrorDialog!!.show()

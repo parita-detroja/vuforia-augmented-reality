@@ -39,6 +39,8 @@ class AppRenderer(renderingInterface: AppRendererControl, activity: Activity, de
     // Stores orientation
     private var mIsPortrait = false
 
+    var mAngle: Float = 0.toFloat()
+
     init {
         mActivity = activity
 
@@ -108,9 +110,8 @@ class AppRenderer(renderingInterface: AppRendererControl, activity: Activity, de
     // and call any specific rendering method
     fun render() {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT or GLES20.GL_DEPTH_BUFFER_BIT)
-        val state: State
+        val state: State = TrackerManager.getInstance().stateUpdater.updateState()
         // Get our current state
-        state = TrackerManager.getInstance().stateUpdater.updateState()
         mRenderer!!.begin(state)
 
         // We must detect if background reflection is active and adjust the
@@ -159,6 +160,10 @@ class AppRenderer(renderingInterface: AppRendererControl, activity: Activity, de
                     .getEyeDisplayAdjustmentMatrix(viewID)).data
 
             val projectionMatrix = FloatArray(16)
+
+            // Create a rotation for the object
+            Matrix.setRotateM(eyeAdjustmentGL, 0, mAngle, 0f, 0f, -1.0f)
+
             // Apply the adjustment to the projection matrix
             Matrix.multiplyMM(projectionMatrix, 0, rawProjectionMatrixGL, 0, eyeAdjustmentGL, 0)
 

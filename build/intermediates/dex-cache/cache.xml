@@ -25,7 +25,7 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.3"
-        sha1="9e21056f017511e4eee969d8a26fd0291b8e696e">
+        sha1="2476da51f64d64591ef5a473954c495c207dcea3">
         <dex dex="/home/parita/Android/GitProject/AugmentedReality/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_97cfd2aa94a5b6f1152d135457890f77f683956b/classes.dex" />
     </item>
 

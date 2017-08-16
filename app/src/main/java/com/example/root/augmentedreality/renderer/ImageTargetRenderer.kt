@@ -17,7 +17,7 @@ import javax.microedition.khronos.opengles.GL10
 
 // The renderer class for the ImageTargets sample.
 class ImageTargetRenderer(private val mImageTargetActivity: ImageTargetActivity, private val vuforiaAppSession: ApplicationSession) : GLSurfaceView.Renderer, AppRendererControl {
-    private val mSampleAppRenderer: AppRenderer
+    private val mSampleAppRenderer: AppRenderer = AppRenderer(this, mImageTargetActivity, Device.MODE.MODE_AR, false, 0.01f, 5f)
 
     private var mTextures: Vector<Texture>? = null
 
@@ -39,7 +39,14 @@ class ImageTargetRenderer(private val mImageTargetActivity: ImageTargetActivity,
     init {
         // SampleAppRenderer used to encapsulate the use of RenderingPrimitives setting
         // the device mode AR/VR and stereo mode
-        mSampleAppRenderer = AppRenderer(this, mImageTargetActivity, Device.MODE.MODE_AR, false, 0.01f, 5f)
+    }
+
+    fun getAngle(): Float {
+        return mSampleAppRenderer.mAngle
+    }
+
+    fun setAngle(angle: Float) {
+        mSampleAppRenderer.mAngle = angle
     }
 
 
@@ -124,7 +131,7 @@ class ImageTargetRenderer(private val mImageTargetActivity: ImageTargetActivity,
 
             try {
                 mBuildingsModel = Application3DModel()
-                mBuildingsModel!!.loadModel(mImageTargetActivity.getResources().getAssets(),
+                mBuildingsModel!!.loadModel(mImageTargetActivity.resources.assets,
                         "ImageTargets/Buildings.txt")
                 mModelIsLoaded = true
             } catch (e: IOException) {
@@ -138,9 +145,9 @@ class ImageTargetRenderer(private val mImageTargetActivity: ImageTargetActivity,
 
     }
 
-    fun updateConfiguration() {
+    /*fun updateConfiguration() {
         mSampleAppRenderer.onConfigurationChanged(mIsActive)
-    }
+    }*/
 
     // The render function called from SampleAppRendering by using RenderingPrimitives views.
     // The state is owned by SampleAppRenderer which is controlling it's lifecycle.
@@ -194,9 +201,9 @@ class ImageTargetRenderer(private val mImageTargetActivity: ImageTargetActivity,
 
             if (!mImageTargetActivity.isExtendedTrackingActive()) {
                 GLES20.glVertexAttribPointer(vertexHandle, 3, GLES20.GL_FLOAT,
-                        false, 0, mTeapot!!.getVertices())
+                        false, 0, mTeapot!!.vertices)
                 GLES20.glVertexAttribPointer(textureCoordHandle, 2,
-                        GLES20.GL_FLOAT, false, 0, mTeapot!!.getTexCoords())
+                        GLES20.GL_FLOAT, false, 0, mTeapot!!.texCoords)
 
                 GLES20.glEnableVertexAttribArray(vertexHandle)
                 GLES20.glEnableVertexAttribArray(textureCoordHandle)
@@ -213,8 +220,8 @@ class ImageTargetRenderer(private val mImageTargetActivity: ImageTargetActivity,
 
                 // finally draw the teapot
                 GLES20.glDrawElements(GLES20.GL_TRIANGLES,
-                        mTeapot!!.getNumObjectIndex(), GLES20.GL_UNSIGNED_SHORT,
-                        mTeapot!!.getIndices())
+                        mTeapot!!.numObjectIndex, GLES20.GL_UNSIGNED_SHORT,
+                        mTeapot!!.indices)
 
                 // disable the enabled arrays
                 GLES20.glDisableVertexAttribArray(vertexHandle)
@@ -222,9 +229,9 @@ class ImageTargetRenderer(private val mImageTargetActivity: ImageTargetActivity,
             } else {
                 GLES20.glDisable(GLES20.GL_CULL_FACE)
                 GLES20.glVertexAttribPointer(vertexHandle, 3, GLES20.GL_FLOAT,
-                        false, 0, mBuildingsModel!!.getVertices())
+                        false, 0, mBuildingsModel!!.vertices)
                 GLES20.glVertexAttribPointer(textureCoordHandle, 2,
-                        GLES20.GL_FLOAT, false, 0, mBuildingsModel!!.getTexCoords())
+                        GLES20.GL_FLOAT, false, 0, mBuildingsModel!!.texCoords)
 
                 GLES20.glEnableVertexAttribArray(vertexHandle)
                 GLES20.glEnableVertexAttribArray(textureCoordHandle)
@@ -236,7 +243,7 @@ class ImageTargetRenderer(private val mImageTargetActivity: ImageTargetActivity,
                         modelViewProjection, 0)
                 GLES20.glUniform1i(texSampler2DHandle, 0)
                 GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0,
-                        mBuildingsModel!!.getNumObjectVertex())
+                        mBuildingsModel!!.numObjectVertex)
 
                 SampleUtils.checkGLError("Renderer DrawBuildings")
             }
