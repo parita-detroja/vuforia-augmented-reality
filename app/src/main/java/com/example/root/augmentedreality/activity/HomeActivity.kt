@@ -13,7 +13,6 @@ import com.example.root.augmentedreality.R
 import com.example.root.augmentedreality.utility.Constant
 import kotlinx.android.synthetic.main.activity_home.*
 
-
 class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?)

@@ -12,6 +12,11 @@ class Constant
         val IMAGEACTIVITY: Int = 0
         val USERDEFINEDTARGETACTIVITY: Int = 1
 
+        val ROTATIONFLAG: Int = 0
+        val SCALEFLAG: Int = 1
+
+        var rotateScaleIndicatorFlag: Int = -1
+
         var activityFlag: Int = -1
     }
 }

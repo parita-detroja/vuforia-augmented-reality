@@ -22,6 +22,9 @@ import com.example.root.augmentedreality.vuforia.ApplicationSession
 import com.example.root.textrecognitionar.utils.ApplicationGLView
 import com.vuforia.*
 import java.util.*
+import android.view.ScaleGestureDetector
+import kotlinx.android.synthetic.main.camera_overlay.*
+import com.example.root.augmentedreality.utility.Constant
 
 class ImageTargetActivity : AppCompatActivity(), ApplicationControl
 {
@@ -57,8 +60,10 @@ class ImageTargetActivity : AppCompatActivity(), ApplicationControl
     private var mPreviousX: Float = 0.toFloat()
     private var mPreviousY: Float = 0.toFloat()
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    private var mScaleDetector: ScaleGestureDetector? = null
+    private var mScaleFactor = 1f
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my)
 
@@ -66,7 +71,7 @@ class ImageTargetActivity : AppCompatActivity(), ApplicationControl
 
         vuforiaAppSession?.initAR(this, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
 
-        mGestureDetector = GestureDetector(this,GestureListener())
+        mGestureDetector = GestureDetector(this, GestureListener())
 
         mTexture = Vector<Texture>()
         loadTexture()
@@ -75,6 +80,37 @@ class ImageTargetActivity : AppCompatActivity(), ApplicationControl
         mDataSetString.add("Tarmac.xml")
 
         startLoadingAnimation()
+
+        mScaleDetector = ScaleGestureDetector(applicationContext, ScaleListener())
+
+        linear_layout_button.visibility = View.VISIBLE
+
+        btn_rotate_object.setOnClickListener {
+            Constant.rotateScaleIndicatorFlag = Constant.ROTATIONFLAG
+        }
+
+        btn_scale_object.setOnClickListener {
+            Constant.rotateScaleIndicatorFlag = Constant.SCALEFLAG
+        }
+
+        btn_clear.setOnClickListener {
+            Constant.rotateScaleIndicatorFlag = -1
+        }
+    }
+
+    inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+        override fun onScale(detector: ScaleGestureDetector): Boolean {
+            mScaleFactor *= detector.scaleFactor
+
+            // Don't let the object get too small or too large.
+            mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f))
+
+            Log.e("Image target","scale factor : $mScaleFactor")
+
+            mRenderer.setScalFactor(mScaleFactor)
+
+            return true
+        }
     }
 
     override fun doInitTrackers(): Boolean {
@@ -246,39 +282,46 @@ class ImageTargetActivity : AppCompatActivity(), ApplicationControl
 
                 Log.e("Image Target","on touch called")
 
-                val x = motionEvent.x
-                val y = motionEvent.y
-
-                when (motionEvent.action) {
-                    MotionEvent.ACTION_MOVE -> {
-
-                        Log.e("Image Target","on motion event")
-
-                        var dx = x - mPreviousX
-                        var dy = y - mPreviousY
-
-                        // reverse direction of rotation above the mid-line
-                        if (y > view.height / 2) {
-                            dx *= +1
-                        }
-
-                        // reverse direction of rotation to left of the mid-line
-                        if (x < view.width / 2) {
-                            dy *= +1
-                        }
-
-                        mRenderer.setAngle(
-                                mRenderer.getAngle() + (dx + dy) * TOUCH_SCALE_FACTOR)
-
-                        Log.e("Image Target","Angle Changed")
-
-                        mGLView.requestRender()
-                    }
+                if(Constant.rotateScaleIndicatorFlag == Constant.SCALEFLAG)
+                {
+                    mScaleDetector!!.onTouchEvent(motionEvent)
                 }
+                else if(Constant.rotateScaleIndicatorFlag == Constant.ROTATIONFLAG)
+                {
+                    val x = motionEvent.x
+                    val y = motionEvent.y
 
-                mPreviousX = x
-                mPreviousY = y
+                    when (motionEvent.action) {
+                        MotionEvent.ACTION_MOVE -> {
 
+                            Log.e("Image Target","on motion event")
+
+                            var dx = x - mPreviousX
+                            var dy = y - mPreviousY
+
+                            // reverse direction of rotation above the mid-line
+                            if (y > view.height / 2) {
+                                dx *= +1
+                            }
+
+                            // reverse direction of rotation to left of the mid-line
+                            if (x < view.width / 2) {
+                                dy *= +1
+                            }
+
+                            mRenderer.setAngle(
+                                    mRenderer.getAngle() + (dx + dy) * TOUCH_SCALE_FACTOR)
+
+                            Log.e("Image Target","Angle Changed")
+
+                            mGLView.requestRender()
+                        }
+                    }
+
+                    mPreviousX = x
+                    mPreviousY = y
+
+                }
                 true
             }
 

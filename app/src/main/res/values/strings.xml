@@ -54,4 +54,8 @@
 
     <string name="status_bar_scanning">Scanning</string>
 
+    <string name="btn_scale">Scale</string>
+    <string name="btn_rotate">Rotate</string>
+    <string name="btn_clear">Clear</string>
+
 </resources>

@@ -34,11 +34,17 @@ class ImageTargetRenderer(private val mImageTargetActivity: ImageTargetActivity,
 
     private var mIsActive = false
     private var mModelIsLoaded = false
+    var scaleFactor: Float = 1.toFloat()
 
 
     init {
         // SampleAppRenderer used to encapsulate the use of RenderingPrimitives setting
         // the device mode AR/VR and stereo mode
+    }
+
+    fun setScalFactor(scaleFactor: Float)
+    {
+        this.scaleFactor = scaleFactor
     }
 
     fun getAngle(): Float {
@@ -186,9 +192,9 @@ class ImageTargetRenderer(private val mImageTargetActivity: ImageTargetActivity,
 
             if (!mImageTargetActivity.isExtendedTrackingActive()) {
                 Matrix.translateM(modelViewMatrix, 0, 0.0f, 0.0f,
-                        OBJECT_SCALE_FLOAT)
-                Matrix.scaleM(modelViewMatrix, 0, OBJECT_SCALE_FLOAT,
-                        OBJECT_SCALE_FLOAT, OBJECT_SCALE_FLOAT)
+                        OBJECT_SCALE_FLOAT*scaleFactor)
+                Matrix.scaleM(modelViewMatrix, 0, OBJECT_SCALE_FLOAT*scaleFactor,
+                        OBJECT_SCALE_FLOAT*scaleFactor, OBJECT_SCALE_FLOAT*scaleFactor)
             } else {
                 Matrix.rotateM(modelViewMatrix, 0, 90.0f, 1.0f, 0f, 0f)
                 Matrix.scaleM(modelViewMatrix, 0, kBuildingScale,

@@ -41,6 +41,8 @@ class AppRenderer(renderingInterface: AppRendererControl, activity: Activity, de
 
     var mAngle: Float = 0.toFloat()
 
+    //var scaleFactor: Float = 1.toFloat()
+
     init {
         mActivity = activity
 
@@ -162,7 +164,11 @@ class AppRenderer(renderingInterface: AppRendererControl, activity: Activity, de
             val projectionMatrix = FloatArray(16)
 
             // Create a rotation for the object
-            Matrix.setRotateM(eyeAdjustmentGL, 0, mAngle, 0f, 0f, -1.0f)
+            Matrix.rotateM(eyeAdjustmentGL, 0, mAngle, 0f, 0f, -1.0f)
+
+            //scale image according to scale factor
+            /*Matrix.scaleM(projectionMatrix,0,scaleFactor,scaleFactor,1f)
+            Log.e("From image target","scaleing applied")*/
 
             // Apply the adjustment to the projection matrix
             Matrix.multiplyMM(projectionMatrix, 0, rawProjectionMatrixGL, 0, eyeAdjustmentGL, 0)
