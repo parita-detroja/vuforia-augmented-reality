@@ -65,7 +65,6 @@ class ImageTargetActivity : AppCompatActivity(), ApplicationControl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_my)
 
         vuforiaAppSession = ApplicationSession(this)
 
@@ -96,6 +95,11 @@ class ImageTargetActivity : AppCompatActivity(), ApplicationControl
         btn_clear.setOnClickListener {
             Constant.rotateScaleIndicatorFlag = -1
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Constant.rotateScaleIndicatorFlag = -1
     }
 
     inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {

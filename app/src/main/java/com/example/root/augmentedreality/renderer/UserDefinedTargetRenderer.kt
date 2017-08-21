@@ -50,8 +50,22 @@ class UserDefinedTargetRenderer(// Reference to main activity
     private var mvpMatrixHandle: Int = 0
     private var texSampler2DHandle: Int = 0
 
-    private var mTeapot: Teapot? = null
+    private var mCustomImagePlane: CustomImagePlane? = null
 
+    var scaleFactor: Float = 1.toFloat()
+
+    fun setScalFactor(scaleFactor: Float)
+    {
+        this.scaleFactor = scaleFactor
+    }
+
+    fun getAngle(): Float {
+        return mSampleAppRenderer.mAngle
+    }
+
+    fun setAngle(angle: Float) {
+        mSampleAppRenderer.mAngle = angle
+    }
 
     init {
 
@@ -118,11 +132,15 @@ class UserDefinedTargetRenderer(// Reference to main activity
         // Renders video background replacing Renderer.DrawVideoBackground()
         mSampleAppRenderer.renderVideoBackground()
 
+        GLES20.glEnable(GLES20.GL_BLEND)
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA)
+
         GLES20.glEnable(GLES20.GL_DEPTH_TEST)
         GLES20.glEnable(GLES20.GL_CULL_FACE)
+        GLES20.glCullFace(GLES20.GL_BACK)
 
         // Render the RefFree UI elements depending on the current state
-        mActivity.refFreeFrame!!.render()
+        //mActivity.refFreeFrame!!.render()
 
         // Did we find any trackables this frame?
         for (tIdx in 0..state.numTrackableResults - 1) {
@@ -134,16 +152,16 @@ class UserDefinedTargetRenderer(// Reference to main activity
 
             val modelViewProjection = FloatArray(16)
             Matrix.translateM(modelViewMatrix, 0, 0.0f, 0.0f, kObjectScale)
-            Matrix.scaleM(modelViewMatrix, 0, kObjectScale, kObjectScale,
-                    kObjectScale)
+            Matrix.scaleM(modelViewMatrix, 0, kObjectScale*scaleFactor, kObjectScale*scaleFactor,
+                    kObjectScale*scaleFactor)
             Matrix.multiplyMM(modelViewProjection, 0, projectionMatrix, 0, modelViewMatrix, 0)
 
             GLES20.glUseProgram(shaderProgramID)
 
             GLES20.glVertexAttribPointer(vertexHandle, 3, GLES20.GL_FLOAT,
-                    false, 0, mTeapot!!.vertices)
+                    false, 0, mCustomImagePlane!!.vertices)
             GLES20.glVertexAttribPointer(textureCoordHandle, 2,
-                    GLES20.GL_FLOAT, false, 0, mTeapot!!.texCoords)
+                    GLES20.GL_FLOAT, false, 0, mCustomImagePlane!!.texCoords)
 
             GLES20.glEnableVertexAttribArray(vertexHandle)
             GLES20.glEnableVertexAttribArray(textureCoordHandle)
@@ -155,8 +173,8 @@ class UserDefinedTargetRenderer(// Reference to main activity
                     modelViewProjection, 0)
             GLES20.glUniform1i(texSampler2DHandle, 0)
             GLES20.glDrawElements(GLES20.GL_TRIANGLES,
-                    mTeapot!!.numObjectIndex, GLES20.GL_UNSIGNED_SHORT,
-                    mTeapot!!.indices)
+                    mCustomImagePlane!!.numObjectIndex, GLES20.GL_UNSIGNED_SHORT,
+                    mCustomImagePlane!!.indices)
 
             GLES20.glDisableVertexAttribArray(vertexHandle)
             GLES20.glDisableVertexAttribArray(textureCoordHandle)
@@ -165,15 +183,19 @@ class UserDefinedTargetRenderer(// Reference to main activity
         }
 
         GLES20.glDisable(GLES20.GL_DEPTH_TEST)
+        GLES20.glDisable(GLES20.GL_BLEND)
 
         Renderer.getInstance().end()
+
+        // Render the RefFree UI elements depending on the current state
+        mActivity.refFreeFrame!!.render()
     }
 
 
     private fun initRendering() {
         Log.d(LOGTAG, "initRendering")
 
-        mTeapot = Teapot()
+        mCustomImagePlane = CustomImagePlane()
 
         // Define clear color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, if (Vuforia.requiresAlpha())

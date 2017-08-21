@@ -19,6 +19,7 @@ import android.view.ViewGroup.LayoutParams
 import android.widget.RelativeLayout
 import com.example.root.augmentedreality.R
 import com.example.root.augmentedreality.renderer.UserDefinedTargetRenderer
+import com.example.root.augmentedreality.utility.Constant
 import com.example.root.augmentedreality.utility.LoadingDialogHandler
 import com.example.root.augmentedreality.utility.RefFreeFrame
 import com.example.root.augmentedreality.utility.Texture
@@ -27,6 +28,7 @@ import com.example.root.augmentedreality.vuforia.ApplicationException
 import com.example.root.augmentedreality.vuforia.ApplicationSession
 import com.example.root.textrecognitionar.utils.ApplicationGLView
 import com.vuforia.*
+import kotlinx.android.synthetic.main.camera_overlay_udt.*
 import java.util.*
 
 class UserDefinedTargetsActivity : Activity(), ApplicationControl {
@@ -84,6 +86,9 @@ class UserDefinedTargetsActivity : Activity(), ApplicationControl {
     private var mUILayout: RelativeLayout? = null
     private var mBottomBar: View? = null
     private var mCameraButton: View? = null
+    private var mClearButton: View? = null
+    private var mScaleButton: View? = null
+    private var mRotateButton: View? = null
 
     // Alert dialog for displaying SDK errors
     private var mDialog: AlertDialog? = null
@@ -108,11 +113,22 @@ class UserDefinedTargetsActivity : Activity(), ApplicationControl {
 
     internal var mIsDroidDevice = false
 
+    private val TOUCH_SCALE_FACTOR = 180.0f / 320
+    private var mPreviousX: Float = 0.toFloat()
+    private var mPreviousY: Float = 0.toFloat()
+
+    private var mScaleDetector: ScaleGestureDetector? = null
+    private var mScaleFactor = 1f
+
     // Called when the activity first starts or needs to be recreated after
     // resuming the application or a configuration change.
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(LOGTAG, "onCreate")
         super.onCreate(savedInstanceState)
+
+        setContentView(R.layout.camera_overlay_udt)
+
+        mScaleDetector = ScaleGestureDetector(applicationContext, ScaleListener())
 
         requestPermission()
 
@@ -130,6 +146,22 @@ class UserDefinedTargetsActivity : Activity(), ApplicationControl {
 
         mIsDroidDevice = android.os.Build.MODEL.toLowerCase().startsWith(
                 "droid")
+
+    }
+
+    inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+        override fun onScale(detector: ScaleGestureDetector): Boolean {
+            mScaleFactor *= detector.scaleFactor
+
+            // Don't let the object get too small or too large.
+            mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f))
+
+            Log.e("Image target","scale factor : $mScaleFactor")
+
+            mRenderer!!.setScalFactor(mScaleFactor)
+
+            return true
+        }
     }
 
     fun requestPermission()
@@ -171,7 +203,7 @@ class UserDefinedTargetsActivity : Activity(), ApplicationControl {
     // We want to load specific textures from the APK, which we will later use
     // for rendering.
     private fun loadTextures() {
-        mTextures!!.add(Texture.loadTextureFromApk("TextureTeapotBlue.png",
+        mTextures!!.add(Texture.loadTextureFromApk("moving_target.png",
                 assets))
     }
 
@@ -225,6 +257,8 @@ class UserDefinedTargetsActivity : Activity(), ApplicationControl {
     override fun onDestroy() {
         Log.d(LOGTAG, "onDestroy")
         super.onDestroy()
+
+        Constant.rotateScaleIndicatorFlag = -1
 
         try {
             vuforiaAppSession!!.stopAR()
@@ -336,6 +370,10 @@ class UserDefinedTargetsActivity : Activity(), ApplicationControl {
         // Gets a reference to the Camera button
         mCameraButton = mUILayout!!.findViewById(R.id.camera_button)
 
+        mClearButton = mUILayout!!.findViewById(R.id.btn_clear)
+        mScaleButton = mUILayout!!.findViewById(R.id.btn_scale_object)
+        mRotateButton = mUILayout!!.findViewById(R.id.btn_rotate_object)
+
         // Gets a reference to the loading dialog container
         loadingDialogHandler.mLoadingDialogContainer = mUILayout!!
                 .findViewById(R.id.loading_layout)
@@ -359,13 +397,27 @@ class UserDefinedTargetsActivity : Activity(), ApplicationControl {
         }
     }
 
-    // Button Camera clicked
+    // Button screen shot clicked
     fun onScreenshotClick(v: View) {
         count = 1
         loadingDialogHandler
                 .sendEmptyMessage(LoadingDialogHandler.SHOW_LOADING_DIALOG)
     }
 
+    fun onClearClick(v: View)
+    {
+        Constant.rotateScaleIndicatorFlag = -1
+    }
+
+    fun onRotateClick(v: View)
+    {
+        Constant.rotateScaleIndicatorFlag = Constant.ROTATIONFLAG
+    }
+
+    fun onScaleClick(v: View)
+    {
+        Constant.rotateScaleIndicatorFlag = Constant.SCALEFLAG
+    }
 
     // Creates a texture given the filename
     internal fun createTexture(nName: String): Texture {
@@ -591,6 +643,60 @@ class UserDefinedTargetsActivity : Activity(), ApplicationControl {
 
             if (!result)
                 Log.e(LOGTAG, "Unable to enable continuous autofocus")
+
+            val mOnTouchListener = View.OnTouchListener { view, motionEvent ->
+
+                // MotionEvent reports input details from the touch screen
+                // and other input controls. In this case, you are only
+                // interested in events where the touch position changed.
+
+                Log.e("Image Target","on touch called")
+                Log.e("Flag","value : ${Constant.rotateScaleIndicatorFlag}")
+
+                if(Constant.rotateScaleIndicatorFlag == Constant.SCALEFLAG)
+                {
+                    mScaleDetector!!.onTouchEvent(motionEvent)
+                }
+                else if(Constant.rotateScaleIndicatorFlag == Constant.ROTATIONFLAG)
+                {
+                    val x = motionEvent.x
+                    val y = motionEvent.y
+
+                    when (motionEvent.action) {
+                        MotionEvent.ACTION_MOVE -> {
+
+                            Log.e("Image Target","on motion event")
+
+                            var dx = x - mPreviousX
+                            var dy = y - mPreviousY
+
+                            // reverse direction of rotation above the mid-line
+                            if (y > view.height / 2) {
+                                dx *= +1
+                            }
+
+                            // reverse direction of rotation to left of the mid-line
+                            if (x < view.width / 2) {
+                                dy *= +1
+                            }
+
+                            mRenderer!!.setAngle(
+                                    mRenderer!!.getAngle() + (dx + dy) * TOUCH_SCALE_FACTOR)
+
+                            Log.e("Image Target","Angle Changed")
+
+                            mGlView!!.requestRender()
+                        }
+                    }
+
+                    mPreviousX = x
+                    mPreviousY = y
+
+                }
+                true
+            }
+
+            mGlView!!.setOnTouchListener(mOnTouchListener)
 
         } else {
             Log.e(LOGTAG, mApplicationException.string)

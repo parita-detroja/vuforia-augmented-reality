@@ -25,17 +25,17 @@ class HomeActivity : AppCompatActivity() {
         }
 
         relative_layout_text_recognition.setOnClickListener {
-            val intent: Intent = Intent(this, TextRecognitionActivity::class.java)
+            val intent = Intent(this, TextRecognitionActivity::class.java)
             startActivity(intent)
         }
 
         relative_layout_image_target.setOnClickListener {
-            val intent: Intent = Intent(this, ImageTargetActivity::class.java)
+            val intent = Intent(this, ImageTargetActivity::class.java)
             startActivity(intent)
         }
 
         relative_layout_moving_target.setOnClickListener {
-            val intent: Intent = Intent(this, MovingTargetActivity::class.java)
+            val intent = Intent(this, MovingTargetActivity::class.java)
             startActivity(intent)
         }
 
@@ -47,12 +47,12 @@ class HomeActivity : AppCompatActivity() {
         relative_layout_cloud_recognition.setOnClickListener {
             /*Constant.activityFlag = Constant.IMAGEACTIVITY
             requestCameraPermission()*/
-            val intent: Intent = Intent(this, CloudRecognitionActivity::class.java)
+            val intent = Intent(this, CloudRecognitionActivity::class.java)
             startActivity(intent)
         }
     }
 
-    fun requestCameraPermission()
+    private fun requestCameraPermission()
     {
         if (ContextCompat.checkSelfPermission(this@HomeActivity, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -73,7 +73,7 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    fun requestLocationPermission()
+    private fun requestLocationPermission()
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) !=
@@ -82,7 +82,7 @@ class HomeActivity : AppCompatActivity() {
             this.requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 0)
         } else
         {
-            val intent: Intent = Intent(this, LocationBasedARActivity::class.java)
+            val intent = Intent(this, LocationBasedARActivity::class.java)
             startActivity(intent)
         }
     }

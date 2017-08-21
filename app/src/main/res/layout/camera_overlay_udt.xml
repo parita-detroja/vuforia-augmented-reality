@@ -4,20 +4,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <ImageButton
-        android:id="@+id/image_screen_shot"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:contentDescription="@string/content_desc_screen_shot_button"
-        android:cropToPadding="false"
-        android:fitsSystemWindows="false"
-        android:onClick="onScreenshotClick"
-        android:scaleType="fitXY"
-        android:src="@drawable/screen_shot"
-        android:background="@color/transparent"/>
+    <LinearLayout
+        android:id="@+id/linear_layout_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true">
+
+        <Button
+            android:id="@+id/btn_rotate_object"
+            android:text="@string/btn_rotate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onRotateClick"/>
+
+        <Button
+            android:id="@+id/btn_scale_object"
+            android:text="@string/btn_scale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onScaleClick"/>
+
+        <Button
+            android:id="@+id/btn_clear"
+            android:text="@string/btn_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClearClick"/>
+
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/loading_layout"
@@ -39,27 +53,38 @@
 
     <LinearLayout
         android:id="@+id/bottom_bar"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="@color/transparent"
-        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:visibility="visible"
-        android:weightSum="1" >
+        android:weightSum="1">
 
         <ImageButton
             android:id="@+id/camera_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="center"
-        	android:layout_centerHorizontal="true"
             android:background="@color/transparent"
             android:contentDescription="@string/content_desc_camera_button"
             android:onClick="onCameraClick"
             android:padding="10dp"
             android:src="@drawable/camera_button_background" />
+
+        <ImageButton
+            android:id="@+id/image_screen_shot"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:background="@color/transparent"
+            android:contentDescription="@string/content_desc_screen_shot_button"
+            android:cropToPadding="false"
+            android:onClick="onScreenshotClick"
+            android:scaleType="fitXY"
+            android:src="@drawable/screen_shot"
+            android:layout_marginLeft="10dp"/>
 
     </LinearLayout>
 
